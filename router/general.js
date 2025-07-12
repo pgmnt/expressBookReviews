@@ -4,6 +4,66 @@ const express = require('express')
 
 const public_users = express.Router()
 
+const axios = require("axios");
+const { json } = require("express");
+let isValid = require("./auth_users.js").isValid;
+
+//Get all books using Async callbacks
+public_users.get("/server/asynbooks", async function (req,res) {
+  try {
+    let response = await axios.get("http://localhost:5000/");
+    console.log(response.data);
+    return res.status(200).json(response.data);
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Error getting book list"});
+  }
+});
+
+ //Get book details by ISBN using Promises
+ public_users.get("/server/asynbooks/isbn/:isbn", function (req,res) {
+  let {isbn} = req.params;
+  axios.get(`http://localhost:5000/isbn/${isbn}`)
+  .then(function(response){
+    console.log(response.data);
+    return res.status(200).json(response.data);
+  })
+  .catch(function(error){
+      console.log(error);
+      return res.status(500).json({message: "Error while fetching book details."})
+  })
+});
+
+//Get book details by author using promises
+public_users.get("/server/asynbooks/author/:author", function (req,res) {
+  let {author} = req.params;
+  axios.get(`http://localhost:5000/author/${author}`)
+  .then(function(response){
+    console.log(response.data);
+    return res.status(200).json(response.data);
+  })
+  .catch(function(error){
+      console.log(error);
+      return res.status(500).json({message: "Error while fetching book details."})
+  })
+});
+
+//Get all books based on title using promises
+public_users.get("/server/asynbooks/title/:title", function (req,res) {
+  let {title} = req.params;
+  axios.get(`http://localhost:5000/title/${title}`)
+  .then(function(response){
+    console.log(response.data);
+    return res.status(200).json(response.data);
+  })
+  .catch(function(error){
+      console.log(error);
+      return res.status(500).json({message: "Error while fetching book details."})
+  })
+});
+
+
 public_users.post('/register', (req, res) => {
   const { username, password } = req.body
 
